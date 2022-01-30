@@ -1,0 +1,21 @@
+meal_id,eatery,meal_price,meal_cost
+0,'Leaning Tower of Pizza',4,2
+1,'Leaning Tower of Pizza',3.5,1.25
+2,'Leaning Tower of Pizza',4.5,1.75
+3,'Leaning Tower of Pizza',4,0.75
+4,'Burgatorio',6,3.25
+5,'Burgatorio',6.5,4
+6,'Burgatorio',6.25,2.75
+7,'Burgatorio',5,1.25
+8,'Bean Me Up Scotty',4.5,0.75
+9,'Bean Me Up Scotty',4,1.25
+10,'Bean Me Up Scotty',5.5,1.5
+11,'Bean Me Up Scotty',5.75,1
+12,'The Moon Wok',3.75,1.25
+13,'The Moon Wok',4.75,2.25
+14,'The Moon Wok',4.5,2
+15,'The Moon Wok',4.25,1.75
+16,'The Moon Wok',3,1
+17,'Life of Pie',3.25,0.5
+18,'Life of Pie',3,0.25
+19,'Life of Pie',3.75,1.25
