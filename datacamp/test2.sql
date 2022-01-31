@@ -50,11 +50,15 @@ GROUP BY p.name
 ORDER BY p.name;
 
 SELECT 
-	p.name
-FROM phones AS p
-JOIN calls AS c
-ON p.phone_number = c.caller OR p.phone_number = c.callee
-WHERE p.phone_number = c.caller OR p.phone_number = c.callee 
+    p.name
+FROM
+    phones AS p
+        JOIN
+    calls AS c ON p.phone_number = c.caller
+        OR p.phone_number = c.callee
+WHERE
+    p.phone_number = c.caller
+        OR p.phone_number = c.callee
 GROUP BY p.name
 HAVING SUM(c.duration) >= 10
 ORDER BY p.name;
