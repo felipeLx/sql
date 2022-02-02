@@ -9,15 +9,16 @@ Please note you should not use the unit DAY as this will round up to the nearest
 The output of your query should have the following column headers:
 Status / Reason / Total_Number_Outage_Events / Average_Outage_Duration_Time_Days / Year
 */
-SELECT * FROM energy
+SELECT * FROM energy / AEMR
 WHERE Reason = 'Consequential' AND YEAR(Start_Time) = '2018';
 
 SELECT
 	Status,
     Reason,
-    COUNT(Reason) AS Total_Number_Outage_Events,
-    ROUND(AVG(TIMESTAMPDIFF(DAY, Start_Time, End_Time)),2) AS Average_Outage_Duration_Time_Days,
-    YEAR(Start_Time) AS years
+    COUNT(*) AS Total_Number_Outage_Events,
+    ROUND(AVG(TIMESTAMPDIFF(MINUTE, Start_Time, End_Time)/60/24),2) AS Average_Outage_Duration_Time_Days,
+    YEAR(Start_Time) AS Year
 FROM energy
-GROUP BY Status, Reason, years
-ORDER BY years;
+WHERE Status = 'Approved'
+GROUP BY Status, Reason, Year
+ORDER BY Total_Number_Outage_Events DESC, Reason, Year;

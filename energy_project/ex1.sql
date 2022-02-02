@@ -7,4 +7,4 @@ FROM energy
 WHERE EXTRACT(YEAR FROM Start_Time) = '2016' AND
       Status = 'Approved'
 GROUP BY Status, Reason
-ORDER BY Reason;
+ORDER BY Total_Number_Outage_Events DESC, Reason;
