@@ -1,0 +1,14 @@
+unit 5: remove duplicates
+
+By default, the SELECT clause includes an implicit ALL keyword that results in this behavior:
+SELECT ALL City, CountryRegion
+FROM Production.Supplier
+ORDER BY CountryRegion, City;
+
+T-SQL also supports an alternative the DISTINCT keyword:
+SELECT DISTINCT City, CountryRegion
+FROM Production.Supplier
+ORDER BY CountryRegion, City;
+
+
+

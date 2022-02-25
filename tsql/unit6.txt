@@ -1,0 +1,56 @@
+unit 6: Filter data with predicates
+
+If you only want a subset of rows to be processed, you can include a WHERE clause:
+= (equals)
+<> (not equals)
+> (greater than)
+>= (greater than or equal to)
+< (less than)
+<= (less than or equal to)
+
+SELECT ProductCategoryID AS Category, ProductName
+FROM Production.Product
+WHERE ProductCategoryID = 2
+AND ListPrice < 10.00;
+
+SELECT ProductCategoryID AS Category, ProductName
+FROM Production.Product
+WHERE (ProductCategoryID = 2 OR ProductCategoryID = 3)
+AND (ListPrice < 10.00);
+
+
+The IN operator is a shortcut for multiple equality conditions for the same column connected with OR. 
+
+SELECT ProductCategoryID AS Category, ProductName
+FROM Production.Product
+WHERE ProductCategoryID IN (2, 3, 4);
+
+
+The BETWEEN operator uses inclusive boundary values. Products with a price of either 1.00 or 10.00 would be included in the results.
+
+SELECT ProductCategoryID AS Category, ProductName
+FROM Production.Product
+WHERE ListPrice BETWEEN 1.00 AND 10.00;
+
+
+Like: Wildcards allow us to specify partial strings.
+
+SELECT Name, ListPrice
+FROM SalesLT.Product
+WHERE Name LIKE '%mountain%';
+
+
+Like: use the _ wildcard to represent a single character
+The results of this query include products with a name that begins with "Mountain Bike Socks, ", and is followed by a single character: Mountain Bike Socks, M
+
+SELECT Name, ListPrice
+FROM SalesLT.Product
+WHERE Name LIKE 'Mountain Bike Socks, _';
+
+Like: complex patterns. followed by three characters between 0 and 9, followed by a space and then any string, and ending with a comma, a space, and two characters between 0 and 9.
+
+SELECT Name, ListPrice
+FROM SalesLT.Product
+WHERE Name LIKE 'Mountain-[0-9][0-9][0-9] %, [0-9][0-9]';
+
+

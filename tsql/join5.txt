@@ -1,0 +1,14 @@
+join 5: cross joins
+
+# While this result isn't typically a desired output, there are a few practical applications for writing an explicit CROSS JOIN:
+
+# Creating a table of numbers, with a row for each possible value in a range.
+# Generating large volumes of data for testing. When cross joined to itself, a table with as few as 100 rows can readily generate 10,000 output rows with little work from you.
+
+# There is no matching of rows performed, and so no ON clause is used.
+
+SELECT emp.FirstName, prd.Name
+FROM HR.Employee AS emp
+CROSS JOIN Production.Product AS prd;
+
+ 

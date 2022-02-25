@@ -1,0 +1,24 @@
+Unit 3 of 9: Limit the sorted results
+
+TOP is most frequently used with an ORDER BY, but can be used with unordered data.
+SELECT TOP 10 Name, ListPrice
+FROM Production.Product
+ORDER BY ListPrice DESC;
+
+
+WITH TIES option, which will retrieve any rows with values that might be found in the selected top N rows.
+
+In the previous example, the query returned the first 10 products in descending order of price. However, by adding the WITH TIES option to the TOP clause, you will see that more rows qualify for inclusion in the top 10 most expensive products:
+
+SELECT TOP 10 WITH TIES Name, ListPrice
+FROM Production.Product
+ORDER BY ListPrice DESC;
+
+The PERCENT may also be used with the WITH TIES option.
+SELECT TOP 10 PERCENT Name, ListPrice
+FROM SalesLT.Product
+ORDER BY ListPrice DESC;
+
+TOP is proprietary to T-SQL.
+TOP on its own doesn't support skipping rows.
+Because TOP depends on an ORDER BY clause, you cannot use one sort order to establish the rows filtered by TOP and another to determine the output order.

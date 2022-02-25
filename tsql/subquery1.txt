@@ -1,0 +1,51 @@
+subquery 2: A subquery is a SELECT statement nested, or embedded, within another query. 
+
+# The purpose of a subquery is to return results to the outer query. The form of the results will determine whether the subquery is a scalar or multi-valued subquery:
+
+# Scalar subqueries return a single value. Outer queries must process a single result.
+
+# Multi-valued subqueries return a result much like a single-column table. Outer queries must be able to process multiple values.
+
+
+subquery 3: Use scalar or multi-valued subqueries
+
+# A scalar subquery is an inner SELECT statement within an outer query, written to return a single value.
+
+# Multi-valued subqueries, as the name suggests, can return more than one row. However they still return a single column.
+
+SELECT SalesOrderID, ProductID, OrderQty
+FROM Sales.SalesOrderDetail
+WHERE SalesOrderID = 
+   (SELECT MAX(SalesOrderID)
+    FROM Sales.SalesOrderHeader);
+
+
+# A scalar subquery can be used anywhere in a query where a value is expected, including the SELECT list.
+
+SELECT SalesOrderID, ProductID, OrderQty,
+    (SELECT AVG(OrderQty)
+     FROM SalesLT.SalesOrderDetail) AS AvgQty
+FROM SalesLT.SalesOrderDetail
+WHERE SalesOrderID = 
+    (SELECT MAX(SalesOrderID)
+     FROM SalesLT.SalesOrderHeader);
+
+
+# A multi-valued subquery is well suited to return results using the IN operator. 
+
+SELECT CustomerID, SalesOrderID
+FROM Sales.SalesOrderHeader
+WHERE CustomerID IN (
+    SELECT CustomerID
+    FROM Sales.Customer
+    WHERE CountryRegion = 'Canada');
+    
+# multi-valued subqueries can easily be written using joins.
+
+SELECT c.CustomerID, o.SalesOrderID
+FROM Sales.Customer AS c
+JOIN Sales.SalesOrderHeader AS o
+    ON c.CustomerID = o.CustomerID
+WHERE c. CountryRegion = 'Canada';
+
+

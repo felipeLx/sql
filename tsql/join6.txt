@@ -1,0 +1,16 @@
+join 6: self joins
+
+SELECT emp.FirstName AS Employee, 
+       mgr.FirstName AS Manager
+FROM HR.Employee AS emp
+LEFT OUTER JOIN HR.Employee AS mgr
+  ON emp.ManagerID = mgr.EmployeeID;
+
+# The results of this query include a row for each employee with the name of their manager. 
+
+# To accomplish tasks like this, you should consider the following guidelines:
+
+# Define two instances of the same table in the FROM clause, and join them as needed, using inner or outer joins.
+# Use table aliases to differentiate the two instances of the same table.
+# Use the ON clause to provide a filter comparing columns of one instance of the table with columns from the other instance of the table.
+

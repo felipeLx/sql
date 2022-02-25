@@ -1,0 +1,55 @@
+unit 2 join: 
+
+SELECT p.ProductID, m.Name AS Model, p.Name AS Product
+FROM SalesLT.Product AS p, SalesLT.ProductModel AS m
+WHERE p.ProductModelID = m.ProductModelID;
+
+# should be:
+SELECT p.ProductID, m.Name AS Model, p.Name AS Product
+FROM SalesLT.Product AS p
+JOIN SalesLT.ProductModel AS m
+    ON p.ProductModelID = m.ProductModelID;
+
+# INNER JOIN: INNER JOIN to find matching rows between two tables
+SELECT emp.FirstName, ord.Amount
+FROM HR.Employee AS emp 
+INNER JOIN Sales.SalesOrder AS ord
+    ON emp.EmployeeID = ord.EmployeeID;
+    
+SELECT p.ProductID, m.Name AS Model, p.Name AS Product
+FROM Production.Product AS p
+INNER JOIN Production.ProductModel AS m
+    ON p.ProductModelID = m.ProductModelID
+ORDER BY p.ProductID;
+
+# INNER JOIN: more than two tables
+SELECT od.SalesOrderID, m.Name AS Model, p.Name AS ProductName, od.OrderQty
+FROM Production.Product AS p
+INNER JOIN Production.ProductModel AS m
+    ON p.ProductModelID = m.ProductModelID
+INNER JOIN Sales.SalesOrderDetail AS od
+    ON p.ProductID = od.ProductID
+ORDER BY od.SalesOrderID;
+
+
+# OUTER JOIN: display all the rows that have matching rows between the tables, plus all the rows that don’t have a match in the other table.
+
+SELECT emp.FirstName, ord.Amount
+FROM HR.Employee AS emp
+LEFT OUTER JOIN Sales.SalesOrder AS ord
+    ON emp.EmployeeID = ord.EmployeeID;
+
+# When using LEFT, RIGHT, or FULL to define a join, you can omit the OUTER
+SELECT emp.FirstName, ord.Amount
+FROM HR.Employee AS emp
+LEFT JOIN Sales.SalesOrder AS ord
+    ON emp.EmployeeID = ord.EmployeeID;
+
+As with an INNER JOIN, an OUTER JOIN may be performed on a single matching column or on multiple matching attributes.
+Unlike an INNER JOIN, the order in which tables are listed and joined in the FROM clause does matter with OUTER JOIN, as it will determine whether you choose LEFT or RIGHT for your join.
+Multi-table joins are more complex when an OUTER JOIN is present. The presence of NULLs in the results of an OUTER JOIN may cause issues if the intermediate results are then joined to a third table. Rows with NULLs may be filtered out by the second join's predicate.
+To display only rows where no match exists, add a test for NULL in a WHERE clause following an OUTER JOIN predicate.
+A FULL OUTER JOIN is used rarely. It returns all the matching rows between the two tables, plus all the rows from the first table with no match in the second, plus all the rows in the second without a match in the first.
+There is no way to predict the order the rows will come back without an ORDER BY clause. There’s no way to know if the matched or unmatched rows will be returned first.
+
+

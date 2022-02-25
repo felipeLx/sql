@@ -1,0 +1,8 @@
+subquery2: self-contained or correlated subqueries
+
+# considerations when using correlated subqueries:
+
+# Correlated subqueries cannot be executed separately from the outer query. This restriction complicates testing and debugging.
+# Unlike self-contained subqueries, which are processed once, correlated subqueries will run multiple times. Logically, the outer query runs first, and for each row returned, the inner query is processed.
+
+
