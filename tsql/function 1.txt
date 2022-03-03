@@ -1,0 +1,13 @@
+function 1: Categorize built-in functions
+
+Function     Description
+
+Scalar       Operate on a single row, return a single value.
+Logical      Compare multiple values to determine a single output.
+Ranking      Operate on a partition (set) of rows.
+Rowset       Return a virtual table that can be used in a FROM clause in a T-SQL statement.
+Aggregate    Take one or more input values, return a single summarizing value.
+
+
+
+

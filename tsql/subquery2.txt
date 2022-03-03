@@ -5,4 +5,34 @@ subquery2: self-contained or correlated subqueries
 # Correlated subqueries cannot be executed separately from the outer query. This restriction complicates testing and debugging.
 # Unlike self-contained subqueries, which are processed once, correlated subqueries will run multiple times. Logically, the outer query runs first, and for each row returned, the inner query is processed.
 
+#example uses a correlated subquery to return the most recent order for each customer. 
+SELECT SalesOrderID, CustomerID, OrderDate
+FROM SalesLT.SalesOrderHeader AS o1
+WHERE SalesOrderID =
+    (SELECT MAX(SalesOrderID)
+     FROM SalesLT.SalesOrderHeader AS o2
+     WHERE o2.CustomerID = o1.CustomerID)
+ORDER BY CustomerID, OrderDate;
+
+# EXISTS predicate determines whether any rows meeting a specified condition exist.
+SELECT CustomerID, CompanyName, EmailAddress 
+FROM Sales.Customer AS c 
+WHERE EXISTS
+(SELECT * 
+  FROM Sales.SalesOrderHeader AS o
+  WHERE o.CustomerID = c.CustomerID);
+  
+# useful application of EXISTS is negating the subquery with NOT
+# return any customer who has never placed an order
+SELECT CustomerID, CompanyName, EmailAddress 
+FROM SalesLT.Customer AS c 
+WHERE NOT EXISTS
+  (SELECT * 
+   FROM SalesLT.SalesOrderHeader AS o
+   WHERE o.CustomerID = c.CustomerID);
+   
+# To write queries that use EXISTS with subqueries, consider the following guidelines:
+
+# The keyword EXISTS directly follows WHERE. No column name (or other expression) precedes it, unless NOT is also used.
+# Within the subquery, use SELECT *. No rows are returned by the subquery, so no columns need to be specified.
 

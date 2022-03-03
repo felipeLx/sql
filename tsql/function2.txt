@@ -1,0 +1,5 @@
+function 2: scalar functions
+# Scalar functions return a single value and usually work on a single row of data. The number of input values they take can be zero (for example, GETDATE), one (for example, UPPER), or multiple (for example, ROUND). 
+
+# when using scalar functions:
+
