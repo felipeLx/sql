@@ -11,4 +11,4 @@ SELECT
 FROM energy
 WHERE Status = 'Approved' AND Reason = 'Forced' AND YEAR(Start_Time) BETWEEN '2016' AND '2017'
 GROUP BY Participant_Code, Status, Year
-ORDER BY Avg_Outage_MW_Loss, Year DESC;
+ORDER BY Avg_Outage_MW_Loss DESC, Year;

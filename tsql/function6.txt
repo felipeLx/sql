@@ -1,0 +1,5 @@
+Filter groups with Having
+# HAVING clause acts as a filter on groups. 
+# HAVING clause enables you to create a search condition, conceptually similar to the predicate of a WHERE clause, which then tests each group returned by the GROUP BY clause.
+
+

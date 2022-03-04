@@ -1,0 +1,27 @@
+ranking and rowset functions
+# They work with a set of rows as input and return a set of rows as output.
+# example uses the RANK function to calculate a ranking based on the ListPrice, with the highest price ranked at 1:
+SELECT TOP 100 ProductID, Name, ListPrice,
+RANK() OVER(ORDER BY ListPrice DESC) AS RankByPrice
+FROM Production.Product AS p
+ORDER BY RankByPrice;
+
+# OVER clause to define partitions, or groupings within the data.
+SELECT c.Name AS Category, p.Name AS Product, ListPrice,
+  RANK() OVER(PARTITION BY c.Name ORDER BY ListPrice DESC) AS RankByPrice
+FROM Production.Product AS p
+JOIN Production.ProductCategory AS c
+ON p.ProductCategoryID = c.ProductcategoryID
+ORDER BY Category, RankByPrice;
+
+# Rowset functions return a virtual table that can be used in the FROM clause as a data source. 
+# OPENDATASOURCE, OPENQUERY, OPENROWSET, OPENXML, and OPENJSON.
+
+# OPENROWSET to get the results of a query from a SQL Server instance named SalesDB.
+SELECT a.*
+FROM OPENROWSET('SQLNCLI', 'Server=SalesDB;Trusted_Connection=yes;',
+    'SELECT Name, ListPrice
+    FROM AdventureWorks.Production.Product') AS a;
+    
+# The OPENXML and OPENJSON functions enable you to query structured data in XML or JSON format and extract values into a tabular rowset.
+

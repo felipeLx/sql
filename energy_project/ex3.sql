@@ -19,6 +19,6 @@ SELECT
     ROUND(AVG(TIMESTAMPDIFF(MINUTE, Start_Time, End_Time)/60/24),2) AS Average_Outage_Duration_Time_Days,
     YEAR(Start_Time) AS Year
 FROM energy
-WHERE Status = 'Approved'
+WHERE Status = 'Approved' AND YEAR(Start_Time) BETWEEN '2016' AND '2017'
 GROUP BY Status, Reason, Year
-ORDER BY Total_Number_Outage_Events DESC, Reason, Year;
+ORDER BY Average_Outage_Duration_Time_Days DESC, Reason, Year;

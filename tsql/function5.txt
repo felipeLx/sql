@@ -1,0 +1,23 @@
+Summarize data with Group By
+# GROUP BY creates groups and places rows into each group as determined by the elements specified in the clause.
+SELECT CustomerID
+FROM Sales.SalesOrderHeader
+GROUP BY CustomerID;
+
+# equivalent
+SELECT DISTINCT CustomerID
+FROM Sales.SalesOrderHeader
+
+# GROUP BY does not guarantee the order of the results.
+SELECT CustomerID, COUNT(*) AS OrderCount
+FROM Sales.SalesOrderHeader
+GROUP BY CustomerID
+ORDER BY CustomerID;
+
+# SELECT statement are applied in the following order:
+FROM
+WHERE
+GROUP BY
+HAVING
+SELECT
+ORDER BY

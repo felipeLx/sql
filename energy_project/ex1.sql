@@ -1,3 +1,5 @@
+USE american_energy;
+
 SELECT * FROM energy;
 SELECT
   COUNT(Start_Time) AS Total_Number_Outage_Events,

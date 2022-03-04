@@ -1,0 +1,44 @@
+Aggregate functions
+# most common functions such as SUM, MIN, MAX, AVG, and COUNT.
+
+# example in the MyStore sample database:
+SELECT AVG(ListPrice) AS AveragePrice,
+       MIN(ListPrice) AS MinimumPrice,
+       MAX(ListPrice) AS MaximumPrice
+FROM Production.Product;
+
+SELECT AVG(ListPrice) AS AveragePrice,
+       MIN(ListPrice) AS MinimumPrice,
+       MAX(ListPrice) AS MaximumPrice
+FROM Production.Product
+WHERE ProductCategoryID = 15;
+
+# returns first and last company by name, using MIN and MAX:
+SELECT MIN(CompanyName) AS MinCustomer, 
+       MAX(CompanyName) AS MaxCustomer
+FROM SalesLT.Customer;
+
+# example to return only the year portion of the order date, before MIN and MAX are evaluated:
+SELECT MIN(YEAR(OrderDate)) AS Earliest,
+       MAX(YEAR(OrderDate)) AS Latest
+FROM Sales.SalesOrderHeader;
+
+# DISTINCT removes duplicate values from the input column before computing the summary value. 
+SELECT COUNT(DISTINCT CustomerID) AS UniqueCustomers
+FROM Sales.SalesOrderHeader;
+
+# query illustrates the difference between how AVG handles NULL and how you might calculate an average with a SUM/COUNT(*) computed column:
+SELECT SUM(c2) AS sum_nonnulls, 
+    COUNT(*) AS count_all_rows, 
+    COUNT(c2) AS count_nonnulls, 
+    AVG(c2) AS average, 
+    (SUM(c2)/COUNT(*)) AS arith_average
+FROM t1;
+
+# Result:
+sum_nonnulls  count_all_rows  count_nonnulls  average arith_average
+    150              6               5           30        25
+
+# consider replacing the NULLs with another value that will not be ignored by your aggregate function. You can use the COALESCE function for this purpose.
+
+

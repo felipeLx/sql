@@ -1,0 +1,135 @@
+#Lab 4
+SELECT YEAR(SellStartDate) AS SellStartYear, ProductID, Name
+FROM SalesLT.Product
+ORDER BY SellStartYear;
+
+ELECT YEAR(SellStartDate) AS SellStartYear,
+       DATENAME(mm,SellStartDate) AS SellStartMonth,
+       DAY(SellStartDate) AS SellStartDay,
+       DATENAME(dw, SellStartDate) AS SellStartWeekday,
+       DATEDIFF(yy,SellStartDate, GETDATE()) AS YearsSold,
+       ProductID,
+       Name
+FROM SalesLT.Product
+ORDER BY SellStartYear;
+
+# DATEDIFF function returns the specified time interval between and start date and an end date. 
+
+SELECT CONCAT(FirstName + ' ', LastName) AS FullName
+FROM SalesLT.Customer;
+
+
+SELECT UPPER(Name) AS ProductName,
+       ProductNumber,
+       ROUND(Weight, 0) AS ApproxWeight,
+       LEFT(ProductNumber, 2) AS ProductType,
+       SUBSTRING(ProductNumber,CHARINDEX('-', ProductNumber) + 1, 4) AS ModelCode,
+       SUBSTRING(ProductNumber, LEN(ProductNumber) - CHARINDEX('-', REVERSE(RIGHT(ProductNumber, 3))) + 2, 2) AS SizeCode
+FROM SalesLT.Product;
+#Using the SUBSTRING function, which extracts the four characters immediately following the first - character, which is found using the CHARINDEX function.
+
+# Logical function
+SELECT Name, Size AS NumericSize
+FROM SalesLT.Product
+WHERE ISNUMERIC(Size) = 1;
+
+SELECT Name, IIF(ISNUMERIC(Size) = 1, 'Numeric', 'Non-Numeric') AS SizeType
+FROM SalesLT.Product;
+
+SELECT prd.Name AS ProductName,
+       cat.Name AS Category,
+       CHOOSE (cat.ParentProductCategoryID, 'Bikes','Components','Clothing','Accessories') AS ProductType
+FROM SalesLT.Product AS prd
+JOIN SalesLT.ProductCategory AS cat
+    ON prd.ProductCategoryID = cat.ProductCategoryID;
+# CHOOSE function returns the value in the ordinal position in a list based on the a specified index value. The list index is 1-based so in this query the function returns Bikes for category 1, Components for category 2, and so on.
+
+# Aggregate functions
+SELECT COUNT(*) AS Products,
+       COUNT(DISTINCT ProductCategoryID) AS Categories,
+       AVG(ListPrice) AS AveragePrice
+FROM SalesLT.Product;
+
+SELECT COUNT(p.ProductID) AS BikeModels, AVG(p.ListPrice) AS AveragePrice
+FROM SalesLT.Product AS p
+JOIN SalesLT.ProductCategory AS c
+    ON p.ProductCategoryID = c.ProductCategoryID
+WHERE c.Name LIKE '%Bikes';
+
+SELECT Salesperson, COUNT(CustomerID) AS Customers
+FROM SalesLT.Customer
+GROUP BY Salesperson
+ORDER BY Salesperson;
+
+SELECT c.Salesperson, SUM(oh.SubTotal) AS SalesRevenue
+FROM SalesLT.Customer c
+JOIN SalesLT.SalesOrderHeader oh
+    ON c.CustomerID = oh.CustomerID
+GROUP BY c.Salesperson
+ORDER BY SalesRevenue DESC;
+
+SELECT c.Salesperson, ISNULL(SUM(oh.SubTotal), 0.00) AS SalesRevenue
+FROM SalesLT.Customer c
+LEFT JOIN SalesLT.SalesOrderHeader oh
+    ON c.CustomerID = oh.CustomerID
+GROUP BY c.Salesperson
+ORDER BY SalesRevenue DESC;
+
+# HAVING clause
+SELECT Salesperson, COUNT(CustomerID) AS Customers
+FROM SalesLT.Customer
+GROUP BY Salesperson
+HAVING COUNT(CustomerID) > 100
+ORDER BY Salesperson;
+
+# Challenge
+# Retrieve the order ID and freight cost of each order.
+SELECT SalesOrderID,
+       ROUND(Freight, 2) AS FreightCost
+FROM SalesLT.SalesOrderHeader;
+
+# Add the shipping method.
+SELECT SalesOrderID,
+       ROUND(Freight, 2) AS FreightCost,
+       LOWER(ShipMethod) AS ShippingMethod
+FROM SalesLT.SalesOrderHeader;
+
+# Add shipping date details.
+SELECT SalesOrderID,
+       ROUND(Freight, 2) AS FreightCost,
+       LOWER(ShipMethod) AS ShippingMethod,
+       YEAR(ShipDate) AS ShipYear,
+       DATENAME(mm, ShipDate) AS ShipMonth,
+       DAY(ShipDate) AS ShipDay
+FROM SalesLT.SalesOrderHeader;
+
+# Retrieve total sales by product
+SELECT p.Name,SUM(o.LineTotal) AS TotalRevenue
+FROM SalesLT.SalesOrderDetail AS o
+JOIN SalesLT.Product AS p
+    ON o.ProductID = p.ProductID
+GROUP BY p.Name
+ORDER BY TotalRevenue DESC;
+
+# Filter the product sales list to include only products that cost over 1,000
+SELECT p.Name,SUM(o.LineTotal) AS TotalRevenue
+FROM SalesLT.SalesOrderDetail AS o
+JOIN SalesLT.Product AS p
+    ON o.ProductID = p.ProductID
+WHERE p.ListPrice > 1000
+GROUP BY p.Name
+ORDER BY TotalRevenue DESC;
+
+# Filter the product sales groups to include only total sales over 20,000
+SELECT p.Name,SUM(o.LineTotal) AS TotalRevenue
+FROM SalesLT.SalesOrderDetail AS o
+JOIN SalesLT.Product AS p
+    ON o.ProductID = p.ProductID
+WHERE p.ListPrice > 1000
+GROUP BY p.Name
+HAVING SUM(o.LineTotal) > 20000
+ORDER BY TotalRevenue DESC;
+
+
+
+
