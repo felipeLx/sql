@@ -1,0 +1,10 @@
+DELETE data
+# It’s important to keep in mind that a DELETE without a corresponding WHERE clause will remove all the rows from a table. 
+
+DELETE FROM Production.Product
+WHERE discontinued = 1;
+
+# If you really do want to remove all the rows and leave an empty table
+TRUNCATE TABLE Sales.Sample;
+
+

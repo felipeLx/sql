@@ -1,0 +1,40 @@
+Insert
+
+INSERT [INTO] <Table> [(column_list)]
+VALUES ([ColumnName or an expression or DEFAULT or NULL],…n)
+
+INSERT INTO Sales.Promotion (PromotionName,StartDate,ProductModelID,Discount,Notes)
+VALUES
+('Clearance Sale', '01/01/2021', 23, 0.1, '10% discount');
+
+INSERT INTO Sales.Promotion
+VALUES
+('Pull your socks up', DEFAULT, 24, 0.25, NULL);
+
+# column allows NULLs, then a NULL will be inserted.
+INSERT INTO Sales.Promotion (PromotionName, ProductModelID, Discount)
+VALUES
+('Caps Locked', 2, 0.2);
+
+# insert multiple rows
+INSERT INTO Sales.Promotion
+VALUES
+('The gloves are off!', DEFAULT, 3, 0.25, NULL),
+('The gloves are off!', DEFAULT, 4, 0.25, NULL);
+
+# INSERT SELECT, you can insert the set of rows returned by a SELECT query into a destination table. 
+INSERT [INTO] <table or view> [(column_list)]
+SELECT <column_list> FROM <table_list>...;
+
+INSERT INTO Sales.Promotion (PromotionName, ProductModelID, Discount, Notes)
+SELECT DISTINCT 'Get Framed', m.ProductModelID, 0.1, '10% off ' + m.Name
+FROM Production.ProductModel AS m
+WHERE m.Name LIKE '%frame%';
+
+# SELECT INTO cannot be used to insert rows into an existing table
+# because it always creates a new table that is based on the result of the SELECT.
+SELECT SalesOrderID, CustomerID, OrderDate, PurchaseOrderNumber, TotalDue
+INTO Sales.Invoice
+FROM Sales.SalesOrderHeader;
+
+

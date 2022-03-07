@@ -1,0 +1,33 @@
+MERGE data based on multiple tables
+
+# MERGE modifies data, based on one or more conditions:
+
+# When the source data has a matching row in the target table, it can update data in the target table.
+# When the source data has no match in the target, it can insert data into the target table.
+# When the target data has no match in the source, it can delete the target data.
+
+MERGE INTO schema_name.table_name AS TargetTbl
+USING (SELECT <select_list>) AS SourceTbl
+ON (TargetTbl.col1 = SourceTbl.col1)
+WHEN MATCHED THEN 
+   UPDATE SET TargetTbl.col2 = SourceTbl.col2
+WHEN NOT MATCHED [BY TARGET] THEN
+   INSERT (<column_list>)
+   VALUES (<value_list>)
+WHEN NOT MATCHED BY SOURCE THEN
+   DELETE;
+
+# WHEN MATCHED and WHEN NOT MATCHED clauses to update or insert invoice data as required.
+MERGE INTO Sales.Invoice as i
+USING Sales.InvoiceStaging as s
+ON i.SalesOrderID = s.SalesOrderID
+WHEN MATCHED THEN
+    UPDATE SET i.CustomerID = s.CustomerID,
+                i.OrderDate = GETDATE(),
+                i.PurchaseOrderNumber = s.PurchaseOrderNumber,
+                i.TotalDue = s.TotalDue
+WHEN NOT MATCHED THEN
+    INSERT (SalesOrderID, CustomerID, OrderDate, PurchaseOrderNumber, TotalDue)
+    VALUES (s.SalesOrderID, s.CustomerID, s.OrderDate, s.PurchaseOrderNumber, s.TotalDue);
+    
+
