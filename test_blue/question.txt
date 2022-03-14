@@ -1,0 +1,46 @@
+1) Please load "cardio_base.csv". This is a health dataset. Each row represents a person and corresponding attributes like age, height, weight, blood pressure, cholesterol level etc. When asked about age, please calculate with age in years rounded down. How much heavier is the age group with the highest average weight than the age group with the lowest weight? 
+R. 8.1633 (64 years old against 30 years old).
+
+2) Do people over 50 have higher cholesterol levels than the rest? If so, what is the percentage of that difference?
+R. Yes, 119.53% (Over_50: 65737; Under_Equal_50: 29944) -> (x2-x1)/x1
+
+3) Are men more likely to be a smoker than women? If so, how many times more? The data contains information to identify gender IDs.
+R. Yes, 6.587945879 times more man smoke than woman.
+
+4) How tall are the tallest 1% of the people?
+R. 250
+
+5) Which two features have the highest spearman rank correlation?
+R. age-smoke: -0.8469 
+
+6) What percentage of people are more than 2 standard deviations far from the average height?
+R. percent: 3.34% Avg height: 164.3592, count height: 2335 
+
+7) What percentage of the population over 50 years old consume alcohol? Also use the cardio_alco.csv and merge the datasets on ID. Ignore those persons, where we have no alcohol consumption information.
+R. percent: 2.79%
+
+8) Which of the following statements is true with 95% confidence?
+R. option B and option D
+
+a) Smokers have higher blood pressure than non-smokers
+b) Smokers have higher cholesterol level than non smokers
+c) Smokers weight less than non smokers
+d)Men have higher blood pressure than women
+
+
+9) Second Dataset, Covid19 cases. This dataset contains daily covidl9 cases for all countries in the world. Each row represents a calendar day. The rows also contain some simple information about the countries, like population, percentage of the population over 65, GDP and hospital beds per thousand inhabitants. Please use this dataset to answer the following questions.
+
+When did the difference in the total number of confirmed cases between Italy and Germany become more than 10 000?
+R. 2020-03-12 (10,895)
+
+10) Look at the cumulative number of confirmed cases in Italy between 2020-02-28 and 2020-03-20. Fit an exponential function (y = Ae^(Bx)) to this set to express cumulative cases as a function of days passed, by minimizing squared loss. What is the difference between the exponential curve and the total number of real cases on 2020-03-20?
+R. -49.90
+
+11) Which country has the 3rd highest death rate? Death rate: total number of death per million inhabitants
+R. Andorra (0.066%)
+
+12) What is the F1 score of the following statement: Countries, where more than 20% of the population is over 65 years old, have death rates over 50 per million inhabitants. Ignore countries, where any of the necessary information is missing!
+R. 0.43 (using SQL to know the country that match the condition and Python to calculate F1-Score)
+
+13) What is the probability that a country has GDP over $10 000, if we know that they have at least 5 hospital beds per 1000 inhabitants.
+R. 82.14%
