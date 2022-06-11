@@ -1,0 +1,52 @@
+---
+title: "Review of Notebooks and Introduction to dplyr"
+output: html_notebook
+---
+This lesson will present a quick review of R Notebooks, and then it will introduce the dplyr package and the tidyverse.
+
+## Quick Review of Notebooks 
+* Notebooks allow you to combine word processing, data analytics, and output all in one document that can be knitted together in a variety of outputs.
+  + Remember to use the "Markdown Quick Reference" documentation from the "Help" menu in RStudio so that you don't have to memorize everything.
+* To give you some experience with notebooks, we will use R Notebooks for the application lessons in this module.
+* The associated notebook files are primarily intended to be used as you follow along with the video. However, you can certainly use them on their own without the videos.
+* Feel free to step through the notebook in the code view, preview it, or knit it into an html/PDF/or Word file
+
+## The dplyr package
+The dplyr package is a game-changer because it
+
+1. Allows you to write and read code in a way that is more natural than many base r functions
+2. Reduces the amount of verbiage required to write code
+3. Harmonizes with other packages in the Tidyverse
+
+If you haven't already installed the dplyr package on the machine that you're using, then you can do so by running the following code chunk. If you've already installed the package then you may get an error.
+```{r}
+install.packages('dplyr')
+```
+
+You only need to install the package once, but every time you begin a new R session, you need to load the functions by using the library command:
+```{r}
+library(dplyr)
+```
+
+The dplyr package is like a gateway drug because once you use it you probably won't want to quit, and it will lead you to using other related packages in the Tidyverse.
+
+### What is the Tidyverse?
+As described on the [tidyverse website][1] 
+
+> The tidyverse is a collection of R packages designed for data science. All packages share an underlying design philosophy, grammar, and data structures.
+
+Some packages that you may already be familiar with include:
+
+* lubridate
+* forcats
+* stringr
+
+Some additional packages that we will use are:
+
+* magrittr: for chaining functions together
+* tidyr: for reshaping data
+
+While not required for this course, it would probably be worthwhile to explore the [tidyverse website][1] so that you have an idea of what else is possible. The hex logos and names are also quite clever.
+
+[1]:https://www.tidyverse.org/
+

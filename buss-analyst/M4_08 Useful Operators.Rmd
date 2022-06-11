@@ -1,0 +1,64 @@
+---
+title: "Useful Operators: %>% and %in%"
+output: html_notebook
+---
+In this lesson you'll learn about two useful operators. The pipe operator, %>%, allows you to chain functions together. The %in% operator allows you to evaluate if a value is in a vector of values.
+
+## Preliminaries
+Install the dplyr and magrittr packages if you haven't already done so. If you have already done so, then erase or comment out the following code chunk.
+```{r}
+# install.packages('dplyr')
+# install.packages('magrittr')
+```
+Load the dplyr and magrittr packages.
+```{r}
+library(dplyr)
+library(magrittr)
+```
+Make sure that this file and the jan17Items.csv file are in the same folder and that the working directory is set to that folder.
+
+Read in the jan17Items data as j17i.
+```{r}
+j17i <- read.csv('jan17Items.csv')
+```
+
+## Chaining Functions Together with the Pipe Operator: %>%
+Assume that we want to filter the j17i dataframe to only the observations for which the value in the `Cost` column is greater than 11, and then select only the `Cost` and `Price` columns. There are at least two ways that you could do this.
+
+First, you can create an intermediate dataframe.
+```{r}
+df1 <- filter(j17i, Cost > 11)
+df2 <- select(df1, Cost, Price)
+```
+
+Second, you can nest functions.
+```{r}
+df3 <- select(filter(j17i, Cost > 11), Cost, Price)
+```
+
+The first method creates objects that clutter up your working environment unless you remove them. The second method is confusing to read. The pipe operator makes things much easier to read by taking the output from one function and using it as the input to another function. Often times I find that it's easier to read if each function is on a new line. Here's how we can use the pipe operator to perform these two functions:
+```{r}
+df4 <- j17i %>%
+  filter(Cost > 11) %>%
+  select(Cost, Price)
+```
+Notice that this is easy to write and read, and it takes fewer characters. It also prevents the creation of additional objects that are not needed and that end up cluttering the environment and taking up memory.
+
+## Evaluating if an Element is in a Vector or Dataframe
+Assume that we want to filter observations down to those for which the line item purchased was one of several. You could use the filter function and manually type out a lot of OR statements, or you can use the %in% operator like this:
+```{r}
+df5 <- j17i %>%
+  filter(LineItem %in% c('Glass Mug', 'Gift Cards'))
+```
+This `%in%` operator can be especially handy especially if the number of items in the list is long or dynamic. For instance, let's assume that we want to only look at observations for cardholders who purchased at least one high-cost item. Here's how we could do that.
+```{r}
+highCostItems <- j17i %>%
+  filter(Cost > 7)
+
+custsThatPurchaseHighCostItems <- j17i %>%
+  filter(CardholderName %in% highCostItems$CardholderName)
+```
+Consider how easy it would be to update the observations if we assume that high-cost items are those that are above 7 dollars rather than 11 dollars.
+
+### Concluding Comments
+This demonstrates how useful these operators can be in the context of dataframes, but these operators are also useful with other objects, like vectors.

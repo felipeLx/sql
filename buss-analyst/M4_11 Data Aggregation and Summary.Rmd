@@ -1,0 +1,56 @@
+---
+title: "Data Aggregation and Summary"
+output: html_notebook
+---
+This lesson introduces two functions from the dplyr package for aggregating data: the `group_by()` function and the `summarise()` function. 
+
+We will also review how to use the lubridate package for converting strings to datetime types, as well as for rounding datetime values to date values.
+
+Finally, we will introduce the `n_distinct()` function for calculating the distinct number of values for different groups.
+
+## Preliminaries
+Load the dplyr, magrittr, and lubridate packages.
+```{r}
+library(dplyr)
+library(magrittr)
+library(lubridate)
+```
+Make sure that this file and the jan17Items.csv file are in the same folder and that the working directory is set to that folder.
+
+Read in the jan17Items data as j17i.
+```{r}
+j17i <- read.csv('jan17Items.csv')
+```
+
+## Aggregating Using dplyr's summarise and group_by Functions
+In the j17i dataframe, every row is a lineitem for a single transaction. Let's assume that we want to analyze daily sales, and therefore we want to aggregate the data at the date level. Here are the five steps that we will take to do that:
+
+1. First we will convert the Time column to a datetime format.
+2. Then we will create a column that represents the date without the time.
+3. We will then group the observations by date.
+4. At this point we will indicate what summary values to calculate.
+5. Finally we will ungroup the data.
+
+```{r}
+daily <- j17i %>%
+  mutate(
+    Time = ymd_hms(Time)
+    , date = round_date(Time, 'day')
+  ) %>%
+  group_by(date) %>%
+  summarise(avgCost = mean(Cost, na.rm = T)
+            , maxPrice = max(Price, na.rm = T)
+            , transactionQuantity = n_distinct(TransactionNumber)) %>%
+  ungroup()
+```
+
+Remember to ungroup the data when you're done with grouping calculations or else you can get errors. Notice that the resulting structure of the daily dataframe object has 30 rows and 4 columns. It retains the grouping column, as well as the three newly computed columns. You can visually explore the data to find out which dates are missing (the first two days in January) and which dates are unexpectedly in the data (February 1).
+
+## Concluding Comments
+At the risk of being repetitive, I think it's worth pointing out how easy it is to read the code due to the tidyverse grammar, which reduces the amount of time that you have to type out the dataframe's name.
+
+While this is a common use case for using the group_by and summarise functions, it's just a starting point. There are many other ways in which these functions will come in handy. For example, the group_by function can also be used along with the mutate function to add a column that indicates the number of times a cardholder made a purchase. Hopefully this short lesson spurs some insight into other ways that these functions can be used, and what you can do with data.
+
+
+
+

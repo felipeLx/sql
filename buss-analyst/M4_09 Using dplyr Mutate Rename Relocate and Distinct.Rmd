@@ -1,0 +1,77 @@
+---
+title: "Using dplyr's Mutate, Rename, Relocate, and Distinct Functions"
+output: html_notebook
+---
+This lesson focuses on four functions that simplify some common data preprocessing tasks, `mutate()`, `rename()`, `relocate()`, and `distinct()`. There are many other functions in the dplyr package for wrangling data. You should spend some time reviewing them when you want to perform a specific task.
+
+## Preliminaries
+Load the dplyr and magrittr packages.
+```{r}
+library(dplyr)
+library(magrittr)
+```
+Make sure that this file and the jan17Items.csv file are in the same folder and that the working directory is set to that folder.
+
+Read in the jan17Items data as j17i.
+```{r}
+j17i <- read.csv('jan17Items.csv')
+```
+
+### Creating New Variables Using dplyr's Mutate Function
+The `mutate` function in the dplyr package makes it less verbose than using only base R by reducing the number of times that you have to type out the name of the dataframe. 
+
+Notice that the j17i dataframe contains a column for Cost, Price, and Quantity. Let's assume that cost represents the variable cost for one unit of a particular line item. We can calculate the contribution margin per unit for each line item if we subtract the cost from the price. We can calculate the total contribution margin by multiplying the contribution margin per unit by the quantity. Here's how you could do that using the `mutate` function.
+
+```{r}
+j17i_2 <- j17i %>%
+  mutate(
+    contMarginPerUnit = Price - Cost 
+    , contMarginTotal = contMarginPerUnit * Quantity
+  )
+```
+
+To do the same thing with base R you would have to type out the name of the dataframe much more, which makes it harder to read in my opinion.
+```{r}
+j17i_2base <- j17i
+j17i_2base$contMarginPerUnit <- j17i_2base$Price - j17i_2base$Cost
+j17i_2base$contMarginTotal <- j17i_2base$contMarginPerUnit * j17i_2base$Quantity
+```
+
+### Renaming Columns Using dplyr's Rename Function
+Renaming columns is very easy to do using dplyr's `rename` function.
+
+```{r}
+j17i_2 <- j17i_2 %>%
+  rename(cmu = contMarginPerUnit, cmt = contMarginTotal)
+```
+
+### Rearraranging Column Order Using dplyr's Relocate Function
+Rearranging columns in a meaningful order can make analyses simpler. For instance, calculated columns are always added on to the far right of a dataframe, but it may make sense to place them next to the columns that the new columns are based on especially if you want to do a quick visual inspection. In modeling it's often helpful if the variable of interest, also known as the dependent variable, is one of the farthest columns to the left. It can also make processes more efficient if you arrange the columns based on data type so that all of the numeric columns are next to each other. Here are a couple of examples of how dplyr's `?relocate` function can make that process simpler.
+
+```{r}
+j17i_2 <- j17i_2 %>%
+  relocate(cmu, cmt, .after = Quantity)
+
+# Place Numeric columns before character columns
+numFirst <- j17i_2 %>% 
+  relocate(where(is.numeric), .before = where(is.character))
+```
+
+
+### Identifying Distinct Values Using dplyr's Distinct Function
+The `distinct` function returns only the unique values from a column. 
+
+Let's assume that once we've calculated the total contribution margin for each line item observation we want a list of all line items for which the contribution margin is greater than $40. However, we do not want to see repeat values of line items, only the distinct values.
+
+Here's how we would do that:
+```{r}
+highCmLineItems <- j17i_2 %>%
+  filter(cmt > 40) %>%
+  select(LineItem) %>%
+  distinct()
+
+highCmLineItems
+```
+
+### Concluding Comments
+Notice how easy it is to read the code using the tidyverse grammar. It's easy enough that you really don't need comments once you get used to what the functions do.

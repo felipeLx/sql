@@ -1,0 +1,82 @@
+---
+title: "Pivoting Dataframes Between Wide and Long Shapes"
+output: html_notebook
+---
+This lesson introduces two functions from the tidyr package for pivoting dataframes between wide and long formats. The tidyr package is part of the tidyverse, and it has functions for reshaping dataframes. 
+
+The shape of a dataframe refers to the number of rows and columns. Many plotting functions and dashboard applications work best with long dataframes that have few columns and many rows. In contrast, many algorithms and human readable tables work best with wide dataframes that have few rows and many columns.
+
+## Preliminaries
+If you haven't already installed the tidyr package on the machine that you're using, then you can do so by running the next code chunk. If you have already installed it, then you do not need to run it again.
+```{r}
+# install.packages('tidyr')
+```
+
+Load the dplyr, magrittr, and lubridate packages.
+```{r}
+library(dplyr)
+library(magrittr)
+library(lubridate)
+library(tidyr)
+```
+Make sure that this file and the jan17Items.csv file are in the same folder and that the working directory is set to that folder.
+
+Read in the jan17Items data as j17i.
+```{r}
+j17i <- read.csv('jan17Items.csv')
+```
+
+## Aggregate the Data at the Day Level
+Aggregate the data into a single observation for each day. Include a computation for the average cost, the maximum price, and the number of transactions for each day.
+
+```{r}
+daily <- j17i %>%
+  mutate(
+    Time = ymd_hms(Time)
+    , date = round_date(Time, 'day')
+  ) %>%
+  group_by(date) %>%
+  summarise(avgCost = mean(Cost, na.rm = T)
+            , maxPrice = max(Price, na.rm = T)
+            , transactionQuantity = n_distinct(TransactionNumber)) %>%
+  ungroup()
+```
+
+## Pivot Longer
+Pivoting to a longer dataframe means that we're going to collapse the **names** for some columns into a single column, and the **values** from those columns into another single column. This will require duplicating the column(s) that identify the observation.
+
+```{r}
+dailyLong <- daily %>%
+  pivot_longer(cols = c(avgCost, maxPrice, transactionQuantity))
+
+# Alternative approaches that also work. See the <tidy-select> link in the documentation
+dailyLong <- daily %>%
+  pivot_longer(cols = avgCost:transactionQuantity)
+dailyLong <- daily %>%
+  pivot_longer(cols = c('avgCost', 'maxPrice', 'transactionQuantity'))
+```
+Notice that the shape of this dataframe is 90 rows long and 3 columns wide rather than 30 columns long and four columns wide.
+
+Let's specify what we want the names to be for the names_to and values_to columns.
+
+```{r}
+dailyLong <- daily %>%
+  pivot_longer(cols = avgCost:transactionQuantity
+               , names_to = 'metrics'
+               , values_to = 'vals')
+```
+
+## Pivot Wider
+Let's now pivot the long dataframe back to a wide version of the dataframe using the pivot_wider function. Let's read the help documentation by running ?pivot_wider in the Console. You can see that it's a parallel version of the pivot_longer function.
+
+```{r}
+dailyWide <- dailyLong %>%
+  pivot_wider(names_from = metrics, values_from = vals)
+```
+A visual inspection confirms that the dailyWide dataframe appears to be the same as the daily dataframe, showing that we successfully pivoted back to the wide format.
+
+
+## Concluding Comments
+It's nice that the pivot_wider and pivot_longer functions are parallel in their usage. These functions have many other optional parameters that you can explore, but many of those options can be performed after the dataframe has been reshaped using the mutate function.
+
+Having a little bit of history using the tidyverse, I really like how easy it has become to use the pivot_wider and pivot_longer functions. Because they're so easy to use and because pivoting the shape of the dataframe is done so frequently, I consider them essential to know how to use if you're going to do any kind of data wrangling in R.

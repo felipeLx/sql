@@ -1,0 +1,79 @@
+---
+title: "Handling Missing Values"
+output: html_notebook
+---
+This lesson introduces some ways to deal with missing values. It's important that missing values are either removed or filled in with imputed values so that algorithms do not throw errors.
+
+## Preliminaries
+Load the dplyr and magrittr packages.
+```{r}
+library(dplyr)
+library(magrittr)
+```
+Make sure that this file and the jan17Items.csv file are in the same folder and that the working directory is set to that folder.
+
+Read in the jan17Items data as j17i.
+```{r}
+j17i <- read.csv('jan17Items.csv')
+```
+
+## Missing Values Review
+NA and NaN values are treated differently than numeric values. For instance, when using the `sum()` function, you have to explicitly indicate that you want to remove NAs from the computation or else it will cause an error.
+```{r}
+v1 <- c(1,NA,3,9,15,NA)
+sum(v1, na.rm = T)
+```
+
+Testing if a value is equal to NA is different from testing if a value is equal to a numeric or string value. You must use is.na() rather than `==`.
+```{r}
+4 == NA # Returns NA
+is.na(4) # Returns FALSE. 
+```
+
+
+## Identifying the Pattern of Missing Values
+When exploring a new dataset, it's worthwhile to identify the pattern of missing values. The `summary()` includes the number of missing values for each column along with the summary statistics. 
+```{r}
+summary(j17i)
+```
+Notice that the Price, Tax, and TotalDue columns have missing values. The others numeric columns do not. Interesting that the number of missing values for Tax and TotalDue are the same. A visual inspection confirms that these are associated with the same observations.
+
+## Removing Missing Values
+If a column has a large percentage of missing values, then you may want to consider dropping that column all together. However, if you are really interested in the effect of that column, then a better idea is to remove the observations that have missing values. To indicate that you want to keep observations for which the value is NOT NA, then use the exclamation point to negate the `is.na()` function.
+```{r}
+j17i_2 <- j17i %>%
+  filter(!is.na(Price))
+summary(j17i_2)
+```
+
+Notice that by removing the observations with missing values for Price must have included some observations for which Tax and TotalDue were missing because there are only 328 missing values instead of 341.
+
+I would give a quick visual inspection to the observations that are missing values for Tax to see if I can identify a pattern. If the pattern isn't meaningful, then I would export the transactions and go over them with the cashier or manager.
+```{r}
+missingPrice <- j17i %>%
+  filter(is.na(Price))
+```
+There are also functions in other packages that help you visualize the pattern of missing values to help you get an idea of the pattern of missing values.
+
+## Imputing Missing Values with the ifelse Function
+If you don't want to lose the other information from the incomplete observation, then you can fill in the missing values with the mean or median value from that column. To do that, you can use the `ifelse()` function, which is identical to the `=IF()` function in Excel. We'll do that within the mutate function, and then calculate the value for TotalDue.
+```{r}
+?ifelse
+j17i_3 <- j17i %>%
+  mutate(
+    Tax = ifelse(is.na(Tax), mean(Tax, na.rm = T), Tax) # Could use median() instead of mean() if there are outliers
+    , TotalDue = NetTotal + Tax
+  )
+summary(j17i_3)
+```
+
+The `ifelse` function is powerful, and you can use it in many other ways. Conditional statements will be covered elsewhere in more depth.
+
+There are other ways for dealing with missing values. A model-based approach fills in missing values based on values from one or more other columns.
+
+## Concluding Comments
+You can see that the easiest approach for dealing with missing values is to remove the columns or the observations; however, you may be throwing the baby out with the bathwater, especially with small datasets. Ultimately, you'll have to use judgment for dealing with missing values. The important thing is to fully disclose what you do. 
+
+The best approach is to perform your analyses using both approaches and then identify if the results change based on what you do. If the results of your do not qualitatively change, then it's not a big deal. If the results are different, then think carefully about which approach is best and justify the approach that you think is best. 
+
+

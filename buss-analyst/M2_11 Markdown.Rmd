@@ -1,0 +1,67 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+  html_notebook: default
+---
+```{r include = F}
+knitr::opts_chunk$set(echo = F)
+```
+
+# Section 1
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*.
+
+Will this be a new paragraph?
+
+## Testing out text formatting
+
+*Italics*
+**Bold**
+~~strikethrough~~
+R^2^
+
+Unordered list:
+
+* List item 1 
+* List item 2 
+  + sub-item 1 
+  
+Ordered list: 
+
+1. First item 
+2. Second item 
+  + sub-item 1
+    + sub-sub item 1
+
+***
+> Four score and seven years ago, our fathers brought forth...
+
+Here is some code within text: ```read.csv('jan17Items.csv')``` It won't really be run, though.
+
+Here is an equation: $NetTotal = \beta_0 + \beta_{1} Quantity + \epsilon$
+
+```{r}
+data('mtcars')
+head(cars)
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+```{r}
+ji <- read.csv('jan17Items.csv', sep = ',', header = T, stringsAsFactors = T)
+summary(ji)
+hist(ji$TotalDue)
+hist(log(ji$TotalDue))
+plot(ji$Quantity, ji$TotalDue)
+plot(ji[,c('Quantity', 'TotalDue', 'Price')])
+```
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+

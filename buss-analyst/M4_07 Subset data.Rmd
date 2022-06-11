@@ -1,0 +1,80 @@
+---
+title: "Subsetting Data Using Filter and Select Functions"
+output: html_notebook
+---
+This lesson will illustrate how to use the tidyverse grammar for (1) reducing the length of the dataframe to specific rows using the filter function in the dplyr package, and (2) reducing the width of the dataframe to specific columns using the select function in the dplyr package.
+
+You don't have to use the dplyr packages to do this, but this package makes it much easier to remember and read.
+## Preliminaries
+Install the dplyr package if you haven't already done so. If you have already done so, then erase or comment out the following code chunk
+```{r}
+# install.packages('dplyr')
+```
+Load the dplyr package. You should do this any time you start a new R session. Notice the warning about masking objects from other packages. This means, for instance, that `filter` is a function in the stats package, as well as the dplyr package. By loading the dplyr package the default filter function will be the one from dplyr, rather than the filter function from the stats package. You can still call the filter function from the stats package by adding the package name before the function and separating it with two colons: `stats::filter()`.
+```{r}
+library(dplyr)
+```
+Save this file in a folder that contains the jan17Items.csv file. Alternatively, move that file to the folder in which this notebook file is saved on your machine.
+
+Set the working directory to the folder where this notebook file and data are saved. You can do that in one of at least two ways:
+
+1. You can use the `setwd()` command, or
+2. You can use the RStudio menu buttons: Session > Set Workding Directory > To Source File Location
+
+Read in the jan17Items data as j17i.
+```{r}
+j17i <- read.csv('jan17Items.csv')
+str(j17i)
+```
+
+## Filtering Rows Using the Filter Function from the dplyr Package
+You can filter rows of data to observations that meet a certain condition using the `filter()` function from the dplyr package along with the relational operator that pertains to your situation.
+```{r}
+highCost <- filter(j17i, Cost > 11)
+dim(highCost)
+```
+
+Compare this to the code to filter rows using base R.
+```{r}
+highCostBase <- j17i[j17i$Cost > 11,]
+dim(highCostBase)
+```
+
+Base R requires you to type the name of the dataframe twice. It's not that big of a deal, but when you start combining multiple preprocessing functions, the tidyverse grammar is easier to read because you don't have to type out the name of the dataframe as often, and it's typically less verbose in general.
+
+
+You can also filter on multiple conditions. For instance, to reduce the observations only to those where cost is greater than 11 **AND** price is greater than 13 you would do this:
+```{r}
+highCostAndPrice <- filter(j17i, Cost > 11 & Price > 13)
+dim(highCostAndPrice)
+```
+
+If you want to be less exclusive and include observations where cost is greater than 11 **OR** price is greater than 13 then you can do this:
+```{r}
+highCostOrPrice <- filter(j17i, Cost > 11 | Price > 13)
+dim(highCostOrPrice)
+```
+___ 
+## Selecting Columns Using dplyr's Select Function
+You can reduce the width of a dataframe by selecting only certain columns using the `select()` function from the dplyr package. Here's how you would select onl the Cost column:
+```{r}
+highCost_Cost <- select(highCost, Cost)
+str(highCost_Cost)
+```
+
+Notice that the highCost_Cost object is still a dataframe object. Compare this to the base R approach:
+```{r}
+highCost_CostBase <- highCost[,c('Cost')]
+str(highCost_CostBase)
+```
+
+Base R is only a little more verbose, but it's definitely harder to read. It takes more mental power to identify what's going on compared to the dplyr approach in which the `select()` function explicitly indicates that you're selecting certain columns.
+
+To select multiple columns, such as the Cost and Price columns is a straightforward extension of selecting a single column:
+```{r}
+highCost_CostPrice <- select(highCost, Cost, Price)
+str(highCost_CostPrice)
+```
+
+### Concluding Comments 
+There are some occasions when the filter and select functions from dplyr are harder than using base R, but you will not encounter those cases in this course.

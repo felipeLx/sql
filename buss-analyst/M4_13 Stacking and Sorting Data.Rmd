@@ -1,0 +1,79 @@
+---
+title: "Stacking and Sorting Data"
+output: html_notebook
+---
+Often times large datasets are divided into smaller dataframes and stored in separate files. For instance, point of sale data may be stored in such a way that there's a separate file for each month. Alternatively, subsets of the data are extracted from a large database in smaller sections. In either of these situations, the rows from the different dataframes need to be stacked together to form a single dataframe. You might call this a vertical stack because it makes the dataframe longer.
+
+There are also times when you want to stack columns from one dataframe to another. You might call this a horizontal stack because it makes the dataframe wider.
+
+After stacking dataframes together into a single dataframe, a common task is to sort the data in a meaningful way.
+
+This lesson focuses on three functions from the dplyr package that helps accomplish these tasks. The first two functions, bind_rows and bind_cols, are used for stacking data together.
+
+The third function, arrange, is used for sorting data.
+
+## Preliminaries
+Load the dplyr, and magrittr packages.
+```{r}
+library(dplyr)
+library(magrittr)
+```
+Make sure that this file and the jan17Items.csv file are in the same folder and that the working directory is set to that folder.
+
+Read in the jan17Items, feb17Items, and mar17Items.csv data.
+```{r}
+j17i <- read.csv('jan17Items.csv')
+f17i <- read.csv('feb17Items.csv')
+m17i <- read.csv('mar17Items.csv')
+```
+
+## Stacking Rows of Data Using dplyr's bind_rows Function
+Now that we've read in the point-of-sale data for three separate months, let's stack the rows together using the bind_rows dplyr function. Let's review a couple of key points from the help documentation for that function by running `?bind_rows` in the Console.
+
+Notice that the first argument is ellipses, indicating that you can combine two or more dataframes, lists, or a list of dataframes. It's nice that we're not limited to combining two dataframes at a time. Let's try it out:
+
+```{r}
+allItems <- bind_rows(j17i, f17i, m17i)
+```
+We can visually inspect the dataframe and confirm that it has observations from each month, and in the order that we entered them into the function. We can also add up the rows for the three separate dataframes and verify that the sum is equal to the rows of the new allItems dataframe that we created.
+
+A great aspect about this function is that you can have a different number of columns, and the column names don't have to match up. While this can be a very useful apsect about this function it also means that you have to be very careful because if the column names aren't spelled exactly the same way then you may unintentionally create new columns.
+
+## Stacking Columns of Data Using dplyr's bind_cols Function
+The bind_cols function works similarly to the bind_rows function. You may have noticed that the documentation for the bind_cols function is the same as for the bind_rows function. 
+
+To illustrate the bind_cols function, let's first separate the allItems dataframe into two three separate dataframes of seven columns each.
+```{r}
+df1 <- allItems[,1:7]
+df2 <- allItems[,8:14]
+df3 <- allItems[,15:21]
+```
+
+Now, let's bind them back together, but in a different order.
+```{r}
+allItems2 <- bind_cols(df1, df3, df2)
+```
+Comparing the number of rows and columns in the allItems2 dataframe to the allItems dataframe confirms that we have a dataframe that is the same shape. A visual inspection confirms that the order of the columns is different.
+
+What happens if you use the bind_cols to stack columns that have a different number of rows? It will throw an error unless there's only one row in which case it will fill in every other row with the values from that one row.
+
+It's important to note that there are easier ways to reorder the columns, without having to separate the columns and then piece them back together again.
+## Sorting the Data Using dplyr's arrange Function
+A related preprocessing task is ordering the data based on values in a specific column. This is often desirable after joining two or more dataframes together. Let's assume that once we create the allItems dataframe we want to sort the data by cardholder name, and then by date. Here's how we can easily accomplish that using the arrange function:
+```{r}
+allItems <- allItems %>%
+  arrange(CardholderName, Time)
+```
+A visual inspection of the data confirms that the data is sorted first by CardholderName and then by Time. If you want to sort in descending order, then you can use the `desc` function to indicate that's what you want to do.
+
+One other useful function is the two-way pipe operator, `%<>%`, which saves you from retyping a dataframe's name if you're going to reassign it to the same name.
+
+```{r}
+allItems %<>%
+  arrange(desc(CardholderName), Time)
+```
+## Concluding Comments
+In conclusion, these functions to bind and sort datasets are really handy. I find that I use the bind_cols function much less frequently than I use the bind_rows function because I often want to create columns from two totally different dataframes, like point of sale data and weather data. When this is the case, I use a join function to make sure that I'm combining values that should go together. That's a topic for another lesson, though.
+
+I hope these simple examples illustrate the key aspects of how they work. As you apply them you'll find that there are optional parameters that you might want to consider using, such as creating a new column to keep track of the id of each dataframe that you stack.
+

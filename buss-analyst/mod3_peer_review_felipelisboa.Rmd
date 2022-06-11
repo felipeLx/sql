@@ -1,0 +1,47 @@
+---
+title: "Introduction to Business Analytics with R."
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+This is an assignment for the module 3 of the course Introduction to Business Analytics with R.
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+Calculate the data of today and define the format "month, day, year".
+
+```{r}
+d <- Sys.Date()
+d <- format.Date(d, '%m/%d/%y')
+```
+Check the data type of the variable created above.
+```{r}
+typeof(d)
+```
+Install the package lubridate to use the pre defined functions of the library.
+```{r}
+install.packages('lubridate')
+library(lubridate)
+```
+Create new variable for "year, month, week and day".
+```{r}
+d_year <- year(d)
+d_year
+d_month <- month(d)
+d_month
+d_week <- week(d)
+d_week
+d_day <- day(d)
+d_day
+```
+Create new variable that is 25 days after today. 
+```{r}
+d_25 = as.Date(d) + 25
+d_25
+```
+Use the function to check the difference of the date variable by days.
+```{r}
+difftime(d_25, d)
+```
